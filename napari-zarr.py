@@ -71,10 +71,10 @@ def build_viewer(paths, pyramids):
     for path, image in zip(paths, pyramids):
         fname = path.name
         names = [f"{fname} [{i}]" for i in range(image[0].shape[0])]
-        if str(image[0].dtype) == 'uint32':
+        if str(image[0].dtype).endswith('int32'):
             assert image[0].shape[0] == 1
             print("LABELS:", fname)
-            viewer.add_labels(image, name=names, blending="translucent")
+            viewer.add_labels(image, name=names[0], blending="translucent")
         else:
             print("IMAGE:", fname)
             viewer.add_image(image, name=names, channel_axis=0, blending="additive", contrast_limits=[0, 65535])
