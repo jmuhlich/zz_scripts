@@ -53,6 +53,9 @@ def read_pyramids(paths):
             p = [da.from_zarr(za, component=i) for i in range(len(s.levels))]
             if len(s.shape) == 2:
                 p = [l[None, ...] for l in p]
+            if s.axes == "SYX":
+                p = [a.transpose((1, 2, 0)) for a in p]
+                p[0].is_rgb = True
         else:
             print(f"WARNING: Not a pyramidal TIFF: {s.parent.filename}")
             if len(s.shape) == 2:
@@ -72,12 +75,21 @@ def build_viewer(paths, pyramids):
         fname = path.name
         names = [f"{fname} [{i}]" for i in range(image[0].shape[0])]
         if str(image[0].dtype).endswith('int32'):
-            assert image[0].shape[0] == 1
+            #assert image[0].shape[0] == 1
             print("LABELS:", fname)
-            viewer.add_labels(image, name=names[0], blending="translucent")
+            viewer.add_labels(image, name=names, blending="translucent")
         else:
             print("IMAGE:", fname)
-            viewer.add_image(image, name=names, channel_axis=0, blending="additive", contrast_limits=[0, 65535])
+            vmax = 1
+            if image[0].dtype == "uint8":
+                vmax = 255
+            elif image[0].dtype == "uint16":
+                vmax = 65535
+            if getattr(image[0], "is_rgb", False):
+                kwargs = dict(rgb=True)
+            else:
+                kwargs = dict(name=names, channel_axis=0)
+            viewer.add_image(image, blending="additive", contrast_limits=[0, vmax], **kwargs)
     for l in viewer.layers[4:]:
         l.visible = False
     return viewer
