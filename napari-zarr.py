@@ -6,7 +6,6 @@ import napari
 import pathlib
 import sys
 import tifffile
-import zarr
 
 
 class ZSLogger(collections.abc.MutableMapping):
@@ -50,7 +49,7 @@ def read_pyramids(paths):
         if s.is_pyramidal:
             za = s.aszarr()
             #za = ZSLogger(za) # Enable this to log all tifffile zarr reads.
-            p = [da.from_zarr(za, component=i) for i in range(len(s.levels))]
+            p = [da.from_zarr(za, component=str(i), zarr_format=2) for i in range(len(s.levels))]
             if len(s.shape) == 2:
                 p = [l[None, ...] for l in p]
             if s.axes == "SYX":
