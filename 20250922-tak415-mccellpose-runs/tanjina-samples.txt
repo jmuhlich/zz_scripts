@@ -1,0 +1,15 @@
+/n/files/HiTS/lsp-analysis/cycif-production/110-BRCA-Mutant-Ovarian-Precursors/ORION-FISH-72525_Tanjina/Orion_FISH_test1/Tanjina_ORION_FISH_test_HGSOC/LSP14728/registration/LSP14728_001_A107_P54N_HMS_TK.ome.tif
+/n/files/HiTS/lsp-analysis/cycif-production/110-BRCA-Mutant-Ovarian-Precursors/ORION-FISH-72525_Tanjina/ORION_FISH_method_F/LSP31055_P110/registration/LSP31055_P110.ome.tif
+/n/files/HiTS/lsp-analysis/cycif-production/110-BRCA-Mutant-Ovarian-Precursors/ORION-FISH-72525_Tanjina/ORION_FISH_method_F/LSP31740_P110/registration/LSP31740_P110.ome.tif
+/n/files/HiTS/lsp-analysis/cycif-production/110-BRCA-Mutant-Ovarian-Precursors/ORION-FISH-72525_Tanjina/ORION_FISH_method_F/LSP33824_P110/registration/LSP33824_P110.ome.tif
+/n/files/HiTS/lsp-analysis/cycif-production/110-BRCA-Mutant-Ovarian-Precursors/ORION-FISH-72525_Tanjina/ORION_FISH_FT_fullpanel/LSP33836_P110/registration/LSP33836_P110.ome.tif
+/n/files/HiTS/lsp-analysis/cycif-production/110-BRCA-Mutant-Ovarian-Precursors/ORION-FISH-72525_Tanjina/ORION_FISH_FT_fullpanel/LSP17773/registration/LSP17773.ome.tif
+/n/files/HiTS/lsp-analysis/cycif-production/110-BRCA-Mutant-Ovarian-Precursors/ORION_FISH_FT_p53_Tanjina_81925/FT_iSTIC/LSP18315/registration/LSP18315.ome.tif
+/n/files/HiTS/lsp-analysis/cycif-production/110-BRCA-Mutant-Ovarian-Precursors/ORION_FISH_FT_p53_Tanjina_81925/FT_iSTIC/LSP32628_P110/registration/LSP32628.ome.tif
+/n/files/HiTS/lsp-analysis/cycif-production/110-BRCA-Mutant-Ovarian-Precursors/ORION_FISH_FT_p53_Tanjina_81925/FT_iSTIC/LSP32633_P110/registration/LSP32633.ome.tif
+/n/files/HiTS/lsp-analysis/cycif-production/110-BRCA-Mutant-Ovarian-Precursors/ORION_FISH_FT_p53_Tanjina_81925/FT_iSTIC/LSP32638_P110/registration/LSP32638.ome.tif
+/n/files/HiTS/lsp-analysis/cycif-production/110-BRCA-Mutant-Ovarian-Precursors/ORION_FISH_FT_p53_Tanjina_81925/FT_iSTIC/LSP32653_P110/registration/LSP32653.ome.tif
+/n/files/HiTS/lsp-analysis/cycif-production/110-BRCA-Mutant-Ovarian-Precursors/ORION_FISH_FT_p53_Tanjina_81925/incidental_p53_sig/LSP17764/registration/LSP17764.ome.tif
+/n/files/HiTS/lsp-analysis/cycif-production/110-BRCA-Mutant-Ovarian-Precursors/ORION_FISH_FT_p53_Tanjina_81925/incidental_p53_sig/LSP17804/registration/LSP17804.ome.tif
+/n/files/HiTS/lsp-analysis/cycif-production/110-BRCA-Mutant-Ovarian-Precursors/ORION_FISH_FT_p53_Tanjina_81925/incidental_p53_sig/LSP17820/registration/LSP17820.ome.tif
+/n/files/HiTS/lsp-analysis/cycif-production/110-BRCA-Mutant-Ovarian-Precursors/ORION_FISH_FT_p53_Tanjina_81925/incidental_p53_sig/LSP17824/registration/LSP17824.ome.tif
