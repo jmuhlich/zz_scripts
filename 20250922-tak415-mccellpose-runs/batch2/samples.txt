@@ -1,0 +1,5 @@
+/n/files/HiTS/lsp-analysis/cycif-production/110-BRCA-Mutant-Ovarian-Precursors/ORION-FISH-72525_Tanjina/October2025-Batch2/LSP18304/registration/LSP18304.ome.tif
+/n/files/HiTS/lsp-analysis/cycif-production/110-BRCA-Mutant-Ovarian-Precursors/ORION-FISH-72525_Tanjina/October2025-Batch2/LSP18316/registration/LSP18316.ome.tif
+/n/files/HiTS/lsp-analysis/cycif-production/110-BRCA-Mutant-Ovarian-Precursors/ORION-FISH-72525_Tanjina/October2025-Batch2/LSP19422/registration/LSP19422.ome.tif
+/n/files/HiTS/lsp-analysis/cycif-production/110-BRCA-Mutant-Ovarian-Precursors/ORION-FISH-72525_Tanjina/October2025-Batch2/LSP35817_P110/registration/LSP35817_P110.ome.tif
+/n/files/HiTS/lsp-analysis/cycif-production/110-BRCA-Mutant-Ovarian-Precursors/ORION-FISH-72525_Tanjina/October2025-Batch2/LSP35823_P110/registration/LSP35823_P110.ome.tif
