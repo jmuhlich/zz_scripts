@@ -7,7 +7,7 @@ import re
 import sys
 import uuid
 
-@pydantic.validate_arguments
+@pydantic.validate_call
 @dataclasses.dataclass
 class AlignInfo:
     version: str
