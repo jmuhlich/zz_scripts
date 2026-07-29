@@ -56,6 +56,8 @@ def read_pyramids(paths):
             p = [da.from_zarr(za, component=str(i), **kwargs) for i in range(len(s.levels))]
             if len(s.shape) == 2:
                 p = [lv[None, ...] for lv in p]
+            if s.axes == "YXS":
+                p[0].is_rgb = True
             if s.axes == "SYX":
                 p = [a.transpose((1, 2, 0)) for a in p]
                 p[0].is_rgb = True
@@ -89,10 +91,12 @@ def build_viewer(paths, pyramids):
             elif image[0].dtype == "uint16":
                 vmax = 65535
             if getattr(image[0], "is_rgb", False):
-                kwargs = dict(rgb=True)
+                kwargs = dict(rgb=True, blending="translucent")
             else:
                 kwargs = dict(name=names, channel_axis=0)
-            viewer.add_image(image, blending="additive", contrast_limits=[0, vmax], **kwargs)
+            kwargs = dict(blending="additive", contrast_limits=[0, vmax]) | kwargs
+            viewer.add_image(image, **kwargs)
+
     for ly in viewer.layers[4:]:
         ly.visible = False
     return viewer
