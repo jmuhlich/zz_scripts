@@ -10,34 +10,27 @@
 # ///
 
 import cv2
-import dask.diagnostics
+import dask.diagnostics as dd
 import dask.array as da
 import numpy as np
 import skimage
 import tifffile
 
-## Make a temp zarr copy of just the 3 DNA channels we need.
-#path_in = '/n/files/HiTS/lsp-analysis/cycif-production/228-joshi-mouse-tls/p228e3_mouse_TLS_reconstruction/registration/LSP70623.ome.tif'
-#tiff = tifffile.TiffFile(path_in)
-#img = da.from_zarr(tiff.series[0].aszarr(level=0))
-#img = img[[0, 5, 10]]
-#da.to_zarr(img, 'LSP70623-dna123.zarr')
-
-img = da.from_zarr('LSP70623-dna123.zarr')
-
-#img = img[:, 2000:12000, 20000:30000]
+path_in = '/n/files/HiTS/lsp-analysis/cycif-production/228-joshi-mouse-tls/p228e3_mouse_TLS_reconstruction/registration/LSP70623.ome.tif'
+tiff = tifffile.TiffFile(path_in)
+img = da.from_zarr(tiff.series[0].aszarr(level=0))
+img = img[[0, 5, 10]]
 
 def calc_edof(img):
     img_norm = img / np.quantile(img, 0.9, axis=(1, 2))[:, None, None]
-    img_laplacian = da.stack([
-        skimage.filters.laplace(imgc).astype(np.float32) for imgc in img_norm
+    img_laplacian = np.array([
+        skimage.filters.laplace(level).astype(np.float32) for level in img_norm
     ])
-    img_laplacian = da.rechunk(img_laplacian, (1, 60, 60))
-    focus_score = da.var(
-        da.lib.stride_tricks.sliding_window_view(img_laplacian, (30, 30), axis=(1, 2)),
-        axis=(-2, -1),
-    )
-    focus_labels = np.argmax(focus_score, axis=0).astype(np.uint8).compute()
+    window_view = np.lib.stride_tricks.sliding_window_view(img_laplacian, (30, 30), axis=(1, 2))
+    # Calling var() directly on a sliding_window_view ends up making a temporary copy of the
+    # full-sized array which explodes our memory usage. Instead, we compute each 1-D slice separately 
+    focus_score = np.array([[np.var(row, axis=(-2, -1)) for row in level] for level in window_view])
+    focus_labels = np.argmax(focus_score, axis=0).astype(np.uint8)
     footprint = skimage.morphology.disk(10)
     focus_labels_f = skimage.filters.rank.median(focus_labels, footprint=footprint)
     focus_labels_f = np.pad(focus_labels_f, [[15, 14], [15, 14]])
@@ -57,6 +50,8 @@ img_out = da.map_overlap(
     dtype=np.uint16,
 )
 store = da.to_zarr(img_out, 'LSP70623-edof.zarr', mode='w', compute=False)
-with dask.diagnostics.ProgressBar():
-    store.compute(scheduler='synchronous')
+
+with dd.ProgressBar():
+    store.compute()
+
 print('Wrote output image to: LSP70623-edof.zarr')
