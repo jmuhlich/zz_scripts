@@ -25,8 +25,8 @@ def format_shape(shape):
     return "%d x %d" % (shape[1], shape[0])
 
 
-def error(path, msg):
-    print(f"\nERROR: {path}: {msg}")
+def error(msg):
+    print(f"\nERROR: {msg}")
     sys.exit(1)
 
 
@@ -39,9 +39,33 @@ def main():
     )
     parser.add_argument(
         "out_prefix", metavar="PREFIX",
-        help="Output prefix. Output files will be named like PREFIX-foo.ome.tif",
+        help="Output prefix. Output files will be named using the pattern PREFIX-encoder-compressor.ome.tif",
+    )
+    parser.add_argument(
+        "--enable-raw", default=False, action="store_true",
+        help="Create 16-bit raw uncompressed output",
+    )
+    parser.add_argument(
+        "--enable-raw-zlib", default=False, action="store_true",
+        help="Create 16-bit raw zlib-compressed output",
+    )
+    parser.add_argument(
+        "--enable-div256-jpeg", default=False, action="store_true",
+        help="Create 8-bit div256-encoded JPEG-compressed output",
+    )
+    parser.add_argument(
+        "--enable-gamma3-jpeg", default=False, action="store_true",
+        help="Create 8-bit gamma3-encoded JPEG-compressed output",
+    )
+    parser.add_argument(
+        "--no-gamma3-jxl", default=False, action="store_true",
+        help="Skip 8-bit gamma3-encoded JPEG-XL-compressed output (enabled by default)",
     )
     args = parser.parse_args()
+    any_optional_enabled = any(getattr(args, a) for a in vars(args) if a.startswith('enable_'))
+    all_default_disabled = all(getattr(args, a) for a in vars(args) if a.startswith('no_'))
+    if all_default_disabled and not any_optional_enabled:
+        error("All default outputs disabled and no optional outputs enabled; nothing to do")
     in_path = args.in_path
     out_prefix = args.out_prefix
 
@@ -50,7 +74,8 @@ def main():
     series = tiff.series[0]
     shape = (series.sizes["Y"], series.sizes["X"])
     dtype = series.dtype
-    assert dtype == np.uint16, "Only uint16 images currently supported"
+    if dtype != np.uint16:
+        error("Only uint16 images currently supported")
     channels = series.sizes["C"]
     img = zarr.open(series.aszarr())
     levels = len(img)
@@ -59,7 +84,8 @@ def main():
     def tiles(level, encoder):
         imgl = img[str(level)]
         ts, tsx = imgl.chunks[1:]
-        assert ts == 1024 and tsx == 1024, "Only images with 1024x1024 tiles currently supported"
+        if ts != 1024 or tsx != 1024:
+            error("Only images with 1024x1024 tiles currently supported")
         ch, cw = imgl.cdata_shape[1:]
         progress = tqdm.tqdm(
             total=imgl.nbytes, desc=f'Level {level}', unit='B', unit_scale=True
@@ -125,11 +151,16 @@ def main():
         return np.clip(np.round((a / 65536.0) ** (1/3) * 256), 0, 255).astype(np.uint8)
 
     print()
-    #write(out_prefix + '-raw.ome.tif', None, None)
-    #write(out_prefix + '-raw-zlib.ome.tif', 'adobe_deflate', None)
-    #write(out_prefix + '-div256-jpeg.ome.tif', 'jpeg', div256)
-    #write(out_prefix + '-gamma3-jpeg.ome.tif', ('jpeg', dict(level=90)), gamma3)
-    write(out_prefix + '-gamma3-jxl.ome.tif', ('jpegxl', dict(distance=1.0)), gamma3)
+    if args.enable_raw:
+        write(out_prefix + '-raw.ome.tif', None, None)
+    if args.enable_raw_zlib:
+        write(out_prefix + '-raw-zlib.ome.tif', 'adobe_deflate', None)
+    if args.enable_div256_jpeg:
+        write(out_prefix + '-div256-jpeg.ome.tif', 'jpeg', div256)
+    if args.enable_gamma3_jpeg:
+        write(out_prefix + '-gamma3-jpeg.ome.tif', ('jpeg', dict(level=90)), gamma3)
+    if not args.no_gamma3_jxl:
+        write(out_prefix + '-gamma3-jxl.ome.tif', ('jpegxl', dict(distance=1.0)), gamma3)
 
 
 if __name__ == '__main__':
