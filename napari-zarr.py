@@ -1,12 +1,21 @@
-#!/usr/bin/env python
+# /// script
+# dependencies = [
+#     "dask",
+#     "imagecodecs",
+#     "napari[all]",
+#     "tifffile",
+#     "zarr",
+# ]
+# ///
+
 
 import collections.abc
 import dask.array as da
 import napari
 import pathlib
+import os
 import sys
 import tifffile
-import zarr
 
 
 class ZSLogger(collections.abc.MutableMapping):
@@ -51,8 +60,6 @@ def read_pyramids(paths):
             za = s.aszarr()
             #za = ZSLogger(za) # Enable this to log all tifffile zarr reads.
             kwargs = {}
-            if hasattr(zarr, '_version') and zarr._version.version_tuple[0] == 3:
-                kwargs['zarr_format'] = 2
             p = [da.from_zarr(za, component=str(i), **kwargs) for i in range(len(s.levels))]
             if len(s.shape) == 2:
                 p = [lv[None, ...] for lv in p]
@@ -95,6 +102,9 @@ def build_viewer(paths, pyramids):
             else:
                 kwargs = dict(name=names, channel_axis=0)
             kwargs = dict(blending="additive", contrast_limits=[0, vmax]) | kwargs
+            # Temporary hack for simplifying viewing of gamma3/minerva images.
+            if '-gamma3' in fname or '-minerva' in fname:
+                kwargs['gamma'] = 3
             viewer.add_image(image, **kwargs)
 
     for ly in viewer.layers[4:]:
@@ -106,6 +116,9 @@ def build_viewer(paths, pyramids):
 def run_napari():
     napari.run()
 
+
+# Override napari config without changing user's persistent config file.
+os.environ['NAPARI_EXPERIMENTAL_ASYNC_'] = 'True'
 
 paths = [pathlib.Path(p) for p in sys.argv[1:]]
 pyramids = read_pyramids(paths)
